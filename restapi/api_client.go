@@ -25,6 +25,7 @@ type apiClientOpt struct {
 	username            string
 	password            string
 	headers             map[string]string
+	raw_headers         map[string]string
 	timeout             int
 	idAttribute         string
 	createMethod        string
@@ -59,6 +60,7 @@ type APIClient struct {
 	username            string
 	password            string
 	headers             map[string]string
+	raw_headers         map[string]string
 	idAttribute         string
 	createMethod        string
 	readMethod          string
@@ -158,6 +160,7 @@ func NewAPIClient(opt *apiClientOpt) (*APIClient, error) {
 		username:            opt.username,
 		password:            opt.password,
 		headers:             opt.headers,
+		raw_headers:         opt.raw_headers,
 		idAttribute:         opt.idAttribute,
 		createMethod:        opt.createMethod,
 		readMethod:          opt.readMethod,
@@ -203,6 +206,10 @@ func (client *APIClient) toString() string {
 	for k, v := range client.headers {
 		buffer.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
 	}
+	buffer.WriteString("raw_headers:\n")
+	for k, v := range client.raw_headers {
+		buffer.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
+	}
 	for _, n := range client.copyKeys {
 		buffer.WriteString(fmt.Sprintf("  %s", n))
 	}
@@ -246,6 +253,11 @@ func (client *APIClient) sendRequest(method string, path string, data string) (s
 	if len(client.headers) > 0 {
 		for n, v := range client.headers {
 			req.Header.Set(n, v)
+		}
+	}
+	if len(client.raw_headers) > 0 {
+		for n, v := range client.raw_headers {
+			req.Header[n] = v
 		}
 	}
 
