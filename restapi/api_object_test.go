@@ -86,6 +86,7 @@ var client, err = NewAPIClient(&apiClientOpt{
 	username:            "",
 	password:            "",
 	headers:             make(map[string]string),
+	rawHeaders:          make(map[string]string),
 	timeout:             5,
 	idAttribute:         "Id",
 	copyKeys:            []string{"Thing"},

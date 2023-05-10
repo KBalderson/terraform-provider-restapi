@@ -25,7 +25,7 @@ type apiClientOpt struct {
 	username            string
 	password            string
 	headers             map[string]string
-	raw_headers         map[string]string
+	rawHeaders          map[string]string
 	timeout             int
 	idAttribute         string
 	createMethod        string
@@ -60,7 +60,7 @@ type APIClient struct {
 	username            string
 	password            string
 	headers             map[string]string
-	raw_headers         map[string]string
+	rawHeaders          map[string]string
 	idAttribute         string
 	createMethod        string
 	readMethod          string
@@ -77,7 +77,7 @@ type APIClient struct {
 	oauthConfig         *clientcredentials.Config
 }
 
-//NewAPIClient makes a new api client for RESTful calls
+// NewAPIClient makes a new api client for RESTful calls
 func NewAPIClient(opt *apiClientOpt) (*APIClient, error) {
 	if opt.debug {
 		log.Printf("api_client.go: Constructing debug api_client\n")
@@ -160,7 +160,7 @@ func NewAPIClient(opt *apiClientOpt) (*APIClient, error) {
 		username:            opt.username,
 		password:            opt.password,
 		headers:             opt.headers,
-		raw_headers:         opt.raw_headers,
+		rawHeaders:          opt.rawHeaders,
 		idAttribute:         opt.idAttribute,
 		createMethod:        opt.createMethod,
 		readMethod:          opt.readMethod,
@@ -206,8 +206,8 @@ func (client *APIClient) toString() string {
 	for k, v := range client.headers {
 		buffer.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
 	}
-	buffer.WriteString("raw_headers:\n")
-	for k, v := range client.raw_headers {
+	buffer.WriteString("rawHeaders:\n")
+	for k, v := range client.rawHeaders {
 		buffer.WriteString(fmt.Sprintf("  %s: %s\n", k, v))
 	}
 	for _, n := range client.copyKeys {
@@ -216,8 +216,11 @@ func (client *APIClient) toString() string {
 	return buffer.String()
 }
 
-/* Helper function that handles sending/receiving and handling
-   of HTTP data in and out. */
+/*
+Helper function that handles sending/receiving and handling
+
+	of HTTP data in and out.
+*/
 func (client *APIClient) sendRequest(method string, path string, data string) (string, error) {
 	fullURI := client.uri + path
 	var req *http.Request
@@ -255,9 +258,11 @@ func (client *APIClient) sendRequest(method string, path string, data string) (s
 			req.Header.Set(n, v)
 		}
 	}
-	if len(client.raw_headers) > 0 {
-		for n, v := range client.raw_headers {
-			req.Header[n] = v
+
+	/* Allow for tokens or other pre-created secrets with non-canonicalized keys */
+	if len(client.rawHeaders) > 0 {
+		for n, v := range client.rawHeaders {
+			req.Header[n] = []string{v}
 		}
 	}
 

@@ -35,6 +35,7 @@ func TestAccRestApiObject_Basic(t *testing.T) {
 		username:            "",
 		password:            "",
 		headers:             make(map[string]string),
+		rawHeaders:          make(map[string]string),
 		timeout:             2,
 		idAttribute:         "id",
 		copyKeys:            make([]string, 0),
@@ -106,9 +107,12 @@ func TestAccRestApiObject_Basic(t *testing.T) {
 	svr.Shutdown()
 }
 
-/* This function generates a terraform JSON configuration from
-   a name, JSON data and a list of params to set by coaxing it
-   all to maps and then serializing to JSON */
+/*
+This function generates a terraform JSON configuration from
+
+	a name, JSON data and a list of params to set by coaxing it
+	all to maps and then serializing to JSON
+*/
 func generateTestResource(name string, data string, params map[string]interface{}) string {
 	strData, _ := json.Marshal(data)
 	config := []string{
