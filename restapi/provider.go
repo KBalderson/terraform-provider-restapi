@@ -241,7 +241,7 @@ func configureProvider(d *schema.ResourceData) (interface{}, error) {
 		username:            d.Get("username").(string),
 		password:            d.Get("password").(string),
 		headers:             headers,
-		raw_headers:         raw_headers,
+		raw_headers:         rawHeaders,
 		useCookies:          d.Get("use_cookies").(bool),
 		timeout:             d.Get("timeout").(int),
 		idAttribute:         d.Get("id_attribute").(string),
